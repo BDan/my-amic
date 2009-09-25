@@ -36,7 +36,7 @@ public class AmicMain extends JFrame implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int ks = keyScan(e);
-		System.out.printf("Got %c\n",e.getKeyChar());
+		//System.out.printf("Got %c\n",e.getKeyChar());
 		if ((ks&0x80) == 0){
 			monAmic.setKeyMatrix(((ks&0xf0)>>>4),(ks&0x0f), true);
 		}else {

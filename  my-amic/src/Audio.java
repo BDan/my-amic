@@ -112,7 +112,7 @@ class Audio
 		final int v_max = 100;
 		int f_au = FREQ;
 		int t_n = (int)t*f_au;
-		final int alpha = 800; //740
+		final int alpha = 710; //740
 		
 		if (t_n<t_acc){
 			//System.out.println("short");
@@ -125,7 +125,7 @@ class Audio
 			t_acc = f_cpu - t_n % f_cpu;
 			acc = bit*(f_cpu - t_acc);
 			int x = 0, y = 0;
-			for (int i=0 ; i<=t_n / f_cpu;i++){
+			for (int i=0 ; i<=(t_n / f_cpu);i++){
 				if (i==0){
 					x = x0;
 				} else{
