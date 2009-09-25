@@ -85,7 +85,7 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 		} else{
 			comp2D.setColor(Color.WHITE);
 		}
-		comp2D.fillRect(0, getSize().height-10, 2, 2);
+		comp2D.fillRect(0, getSize().height-10, 4, 4);
 
 		msLast = System.nanoTime();
 	}
