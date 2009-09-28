@@ -268,11 +268,14 @@ public class Emulator implements Z80.Env, Runnable {
 	}
 	public void launch() {
 		initMem();
-		//loadHex("d:\\2009_n\\other\\amic\\bios\\mon_amic_v01.hex");
+		loadHex("d:\\2009_n\\other\\amic\\mon_v01\\mon_amic.hex");
+		loadHex("d:\\2009_n\\other\\tape\\amic.hex");
+		 
 		//loadHex("d:\\2009_n\\other\\amic\\bios\\amic_01.hex");
-		loadHex("d:\\2009\\amic_emu\\mon_amic_v01\\mon_amic.hex");
+
+		//loadHex("d:\\2009\\amic_emu\\mon_amic_v01\\mon_amic.hex");
 		
-		loadHex("d:\\2009\\z80_tape\\2009_09_02\\tape\\visz80_amic.hex");
+		//loadHex("d:\\2009\\z80_tape\\2009_09_02\\tape\\visz80_amic.hex");
 
 		// aMIC.startAddr(0x8017);
 		// 
