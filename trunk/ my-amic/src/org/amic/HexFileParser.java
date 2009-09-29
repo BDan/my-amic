@@ -1,5 +1,8 @@
 package org.amic;
-/**************************************************************** 
+/****************************************************************
+ *  09.2009 Modified by BDan for the aMIC emulator project.
+ *
+ *  Original copyright notice:
  *  This is an intel hexfile parser written in java.
 Copyright (C) 2002 Deva Seetharam http://www.dseetharam.org
 
@@ -15,11 +18,6 @@ GNU General Public License for more details. It is available at
 http://www.gnu.org/licenses/gpl.html
  */
 
-/* 09.2009 Modified for aMIC emulator project.
- * a) Parses the file in an external array
- * b) Works on int instead of byte 
- *  */
-//import java.util.Vector;
 
 import java.io.File;
 import java.io.FileReader;
@@ -37,14 +35,14 @@ Pos Description
 
 2-3 Record Length: 
     This field contains the number of data bytes in the register 
-    represented as a 2-digit hexidecimal number. This is the 
+    represented as a 2-digit hexadecimal number. This is the 
     total number of data bytes, not including the checksum byte 
     nor the first 9 characters of the line.   
 
 4-7 Address: 
     This field contains the address where the data should be 
     loaded into the chip. This is a value from 0 to 65,535 
-    represented as a 4-digit hexidecimal value. 
+    represented as a 4-digit hexadecimal value. 
 
 8-9 Record Type: 
     This field indicates the type of record for this line. 
@@ -56,7 +54,7 @@ Pos Description
 10-? Data Bytes: 
     The following bytes are the actual data that 
     will be burned into the EPROM. The data is represented as 
-    2-digit hexidecimal values. 
+    2-digit hexadecimal values. 
 
 Last 2 Checksum: 
      The last two characters of the line are a checksum for the 
