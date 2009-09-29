@@ -87,11 +87,12 @@ public class HexFileParser {
 	 * @exception FileNotFoundException If the file can't be found
 	 *                 
 	 */
-
+	/*
 	public HexFileParser(File file) throws FileNotFoundException {
 		if (file == null) throw new NullPointerException("File is null");
 		br = new BufferedReader(new FileReader(file));
 	}
+	*/
 
 
 	/**
@@ -104,7 +105,9 @@ public class HexFileParser {
 	 *                 
 	 */
 
-	public void parseFile(int []iData, int offset) throws IOException {
+	//TODO: the class is broken. It should parse any kind of input stream
+	public void parseFile(int []iData, int offset) throws IOException {}
+	public void parseStream(int []iData, int offset) throws IOException {
 		String record = "";
 		int dataLength = 0;
 		int address = 0;
