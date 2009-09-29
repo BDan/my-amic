@@ -1,1 +1,1 @@
-asmx -e -w -o mon_amic.hex amic_monv01_01.asm 
+asmx -e -w -o mon_amic_v01.hex amic_monv01_01.asm 
