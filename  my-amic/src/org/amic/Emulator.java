@@ -151,8 +151,9 @@ public class Emulator implements Z80.Env, Runnable {
 	
 	public void loadHex (String fName){
 		try {
-		    HexFileParser hfp = new HexFileParser(new File(fName));
-		     hfp.parseFile(memo,0);
+		    HexFileParser hfp = new HexFileParser();
+		     //hfp.parseFile(fName, memo,0);
+		    hfp.parseResource(fName, memo,0);
 		} catch (Exception e) {
 			System.out.println("Can't load ROM file: "+fName);
 		    //e.printStackTrace();
@@ -266,8 +267,8 @@ public class Emulator implements Z80.Env, Runnable {
 		 
 		//loadHex("d:\\2009_n\\other\\amic\\bios\\amic_01.hex");
 		System.out.println (System.getProperty("user.dir"));
-		loadHex("bin\\mon_amic_v01.hex");
-		loadHex("bin\\vis_z80_amic.hex");
+		loadHex("/mon_amic_v01.hex");
+		loadHex("/vis_z80_amic.hex");
 
 		// aMIC.startAddr(0x8017);
 		// 

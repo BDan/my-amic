@@ -19,11 +19,7 @@ http://www.gnu.org/licenses/gpl.html
  */
 
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.FileNotFoundException;
+import java.io.*;
 
 
 /*
@@ -74,7 +70,7 @@ public class HexFileParser {
 
 	private static boolean DEBUG=false; //false;
 
-	private BufferedReader br;
+	//private BufferedReader br;
 
 	static {
 		if (System.getProperty("DEBUG") != null) DEBUG=true;
@@ -105,9 +101,22 @@ public class HexFileParser {
 	 *                 
 	 */
 
-	//TODO: the class is broken. It should parse any kind of input stream
-	public void parseFile(int []iData, int offset) throws IOException {}
-	public void parseStream(int []iData, int offset) throws IOException {
+
+
+	//InputStream in = getClass().getResourceAsStream("/sound.mid");
+
+	public void parseResource(String rName, int []iData, int offset) throws IOException {
+		InputStream in = getClass().getResourceAsStream(rName);
+		Reader inRead = new InputStreamReader(in);
+		parseStream (inRead , iData, offset);
+	}
+	
+	public void parseFile(String fName, int []iData, int offset) throws IOException {
+		Reader inRead = new FileReader(new File(fName));
+		parseStream (inRead , iData, offset);
+	}
+	public void parseStream(Reader inReader, int []iData, int offset) throws IOException {
+		BufferedReader br = new BufferedReader(inReader);
 		String record = "";
 		int dataLength = 0;
 		int address = 0;
