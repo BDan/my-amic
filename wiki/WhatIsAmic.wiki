@@ -1,0 +1,13 @@
+#summary About aMIC. History and links
+[http://my-amic.googlecode.com/svn/wiki/img/amic-top.jpg]
+==aMIC==
+  * aMIC was a home computer designed and manufactured in Romania in 1983-1984
+  * It was built around the Z80 CPU, with a very simple architecture. The design started as a laboratory prototype at _Politechnica Institute_ in Bucharest.
+  * Several configurations were produced, the most typical featuring "monitor" and BASIC interpretor.
+    * _monitor_ was a minimalist piece of firmware allowing launching applications, raw memory view/edit and primitive debugger functions
+    * The BASIC interpretor was also rather primitive (e.g. variables names can be only 2 character long) and targeted towards scientific applications, not entertainment and games (e.g. there was a built-in matrix operation library)
+  * It was an original design, totally unrelated to the Sinclair Spectrum clones popular in the era.
+  * By late '80 it was considered obsolete, very few functional copies survive nowadays
+==Links==
+  * Wikipedia [http://ro.wikipedia.org/wiki/AMIC article] (in Romanian)
+  * A [http://george.chirtoaca.googlepages.com/documentation collection] of articles and books about older Romanian home computers.
