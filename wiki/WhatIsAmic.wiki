@@ -13,5 +13,6 @@
   * Wikipedia [http://ro.wikipedia.org/wiki/AMIC article] (in Romanian)
   * A [http://george.chirtoaca.googlepages.com/documentation collection] of articles and books about older Romanian home computers.
 ==Books==
-  * A. Petrescu, F. Iacob, Gh. Rizescu, C. Novăcescu, E. Decsov, T. Ilin, F. Bar, R. Berindeanu, D. Pănescu - _Totul despre... Calculatorul personal aMIC_. Vol. 1, Editura Tehnică București, 1985.
-  * A. Petrescu, F. Iacob, Gh. Rizescu, C. Novăcescu, E. Decsov, T. Ilin, F. Bar, R. Berindeanu, D. Pănescu, C. Constantinescu, I. Petrescu, A. Matekovits - _Totul despre... Calculatorul personal aMIC._ Vol. 2, Editura Tehnică București, 1985.
+  * A. Petrescu, F. Iacob, Gh. Rizescu, C. Novăcescu, E. Decsov, T. Ilin, F. Bar, R. Berindeanu, D. Pănescu - _Totul despre... Calculatorul personal aMIC_. Vol. 1, Editura Tehnică București, 1985. [http://www.box.net/shared/4n2fj0mv29gg4oxukel5 online]
+  * A. Petrescu, F. Iacob, Gh. Rizescu, C. Novăcescu, E. Decsov, T. Ilin, F. Bar, R. Berindeanu, D. Pănescu, C. Constantinescu, I. Petrescu, A. Matekovits - _Totul despre... Calculatorul personal aMIC._ Vol. 2, Editura Tehnică București, 1985. [http://www.box.net/shared/144hgkobbxhqsng207lu online]
+  * M. Patrubány - _Totul despre... Microprocesorul Z80_ Vol. 1 & 2, Editura Tehnică București, 1989. [http://www.box.net/public/qopn84jn1v Vol. 1 online]
