@@ -8,7 +8,7 @@
     * _monitor_ was a minimalist piece of firmware allowing launching applications, raw memory view/edit and primitive debugger functions
     * The BASIC interpretor was also rather primitive (e.g. variables names can be only 2 character long) and targeted towards scientific applications, not entertainment and games (e.g. there was a built-in matrix operation library)
   * The computer, its hardware, principles of operation, programming, etc. were thoroughly documented in a two volume book (_A. Petrescu (1985)_), which was the first introduction to computing for many people
-  * By late '80 _aMIC_ was considered obsolete, very few copies have survive to date
+  * By late '80 _aMIC_ was considered obsolete, very few copies have survived to date
 ==Links==
   * Wikipedia [http://ro.wikipedia.org/wiki/AMIC article] (in Romanian)
   * A [http://george.chirtoaca.googlepages.com/documentation collection] of articles and books about older Romanian home computers.
