@@ -6,3 +6,9 @@ The aim of this project is to re-create the experience of running the aMIC compu
   * Providing a sample of the "look and feel" of early home computers, for the benefit of younger generations
   * Providing a convenient way to run unique applications such as "VIS-Z80" and the BASIC samples from A. Petrescu (1984) book
   * Preserving endangered examples of software such as aMIC's firmware
+
+== Content ==
+  * About [WhatIsAmic aMIC]
+  * [Limitations Features and limitations]
+  * Implementation [Implementation notes]
+  * User [UserGuide guide]
