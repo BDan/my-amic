@@ -1,0 +1,23 @@
+#summary User guide
+
+  * *my-amic* is a Java application, it needs JRE (Java Runtime Environment) 1.6 or newer to run. If it's not yet installed, download it from [http://www.java.com/en/download/ here].
+  * Get the latest binary from [http://code.google.com/p/my-amic/downloads/list download section].
+  * Run the emulator by simply double-clicking the .jar file.
+    * Or run it in command line with "java -jar amic-emu.1.2jar"
+  * The virtual aMIC boots in _monitor_. 
+    * Launch BASIC with *G0800*
+    * Launch VISIBLE-Z80 with *G8000*
+Sample BASIC program:
+{{{
+10 PRINT "HELLO WORLD!"
+20 FOR I=0 TO 10
+30 PRINT "I IS: ";I
+40 NEXT I
+50 END
+RUN
+}}}
+*Warning!* PC's _Back Space_ key is mapped to aMIC's "BS" which apparently does nothing, use _Delete_ instead.
+
+From more information you'll need _A. Petrescu, 1985_ (volume 2) and/or _M. Patrubany, 1989_ book.
+
+
