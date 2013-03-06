@@ -8,7 +8,7 @@
 == Software ==
   * MON V.01 - first _monitor_ version (2Kb). 
     * The source code (in 8080 assembly) is included in the _A. Petrescu 1985_ book.
-    * I scanned, OCR, proof-read, and compiled. It is included as HEX binary and ASM code in the sources section.
+    * I scanned, OCR, proof-read, and compiled it. It's included as HEX binary and [https://my-amic.googlecode.com/svn/trunk/%20mon_v01/amic_monv01_01.asm ASM code] in the sources section.
   * VISIBLE-Z80 - an educational package simulating the internal operation of Z80 CPU, including also assembler, disassembler, debugger, and coding exercises. 
     * By Miclos Patrubany, distributed (on cassette tape) together with the book _Totul Despre Microprocesorul Z80_.
     * I digitized a copy of the tape, and I extracted the binary using a set of self made tools (mostly written in Ruby).
