@@ -3,13 +3,16 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-        <jar destfile="D:/2009_n/other/amic/amic_emu.jar" filesetmanifest="mergewithoutmain">
+		<copy todir="bin">
+			<fileset dir="src" includes="**/*.hex"/>
+		</copy>
+        <jar destfile="dist/amic_emu.1.2.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
                 <attribute name="Main-Class" value="org.amic.AmicMain"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="D:/2009_n/other/amic/my_amic/bin"/>
+            <fileset dir="bin"/>
         </jar>
     </target>
 </project>

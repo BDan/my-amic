@@ -74,6 +74,10 @@ public class AmicMain extends Applet implements KeyListener { //extends JFrame
 		mainFrame.pack();
 		//setResizable(false);
 		mainFrame.setVisible(true);
+		monAmic.initMem();
+		System.out.println (System.getProperty("user.dir"));
+		monAmic.loadHex("/mon_z80_00.hex");
+		monAmic.loadHex("/vis_z80_amic.hex");
 		monAmic.launch();
 
     	
