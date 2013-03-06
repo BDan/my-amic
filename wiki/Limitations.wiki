@@ -1,0 +1,17 @@
+#summary Limitations to my-amic
+
+== Features ==
+* Implements the main hardware features of aMIC with enough accuracy to run original software like Z80-MONITOR and VISIBLE-Z80
+* Sound
+* 100% speed on most modern PC
+
+== Limitations ==
+* Timing and real-time behaviour is not perfectly accurate, because hardware delay sources (e.g. video RAM access) are not emulated. We don't have any documentation, nor test suites to verify or implement those.
+
+== Missing ==
+* Tape loading and saving 
+    * saving might work, as the tape output bit is routed to audio-out
+* Saving and loading RAM snapshots
+* Reset and INT buttons
+    * Just restart the emulator
+* Better documentation, esp. keyboard map
