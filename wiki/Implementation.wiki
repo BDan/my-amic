@@ -1,7 +1,7 @@
 #summary Implementation notes
 == Emulator ==
   * *my-amic* is a Java application, requiring JRE 1.6 or later. 
-  * The code is derived from [Qaop/Java http://wizard.ae.krakow.pl/~jb/qaop/], a Sinclair Spectrum emulator. I reused most of the project as such, especially the Z80 CPU emulator, real time logic and audio modules.     
+  * The code is derived from [http://wizard.ae.krakow.pl/~jb/qaop/ Qaop/Java], a Sinclair Spectrum emulator. I reused most of the project as such, especially the Z80 CPU emulator, real time logic and audio modules.     
     * I had to modify the display logic (_aMIC_ has 256x256 B/W while Spectrum has 256x192, 8 colors), memory map, I/O map, keyboard matrix, etc.
   * My only source of information about aMIC hardware was the _A. Petrescu, 1985_ book, which sometimes might be incomplete or downright wrong.
 
