@@ -3,10 +3,9 @@ package org.amic;
  * aMIC/PRAE emulator
  * Hardware emulator class
  */
-import java.awt.*;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.*;
+import java.util.Arrays;
 
 public class Emulator implements Z80.Env, Runnable {
 	interface Display{
@@ -258,7 +257,7 @@ public class Emulator implements Z80.Env, Runnable {
 		// System.out.printf("%d, %d, %b\n", row, col, val);
 	}
 	public void launch() {
-		initMem();
+		//initMem();
 		//loadHex("d:\\2009_n\\other\\amic\\mon_v01\\mon_amic.hex");
 		//loadHex("d:\\2009_n\\other\\tape\\amic.hex");
 		
@@ -267,8 +266,8 @@ public class Emulator implements Z80.Env, Runnable {
 		 
 		//loadHex("d:\\2009_n\\other\\amic\\bios\\amic_01.hex");
 		System.out.println (System.getProperty("user.dir"));
-		loadHex("/mon_amic_v01.hex");
-		loadHex("/vis_z80_amic.hex");
+		//loadHex("/mon_amic_v01.hex");
+		//loadHex("/vis_z80_amic.hex");
 
 		// aMIC.startAddr(0x8017);
 		// 
