@@ -174,9 +174,9 @@ public class Emulator implements Z80.Env, Runnable {
 			int iColor = 0;
 			for (int idx = 0; idx < 8; idx++) {
 				if (((val << idx) & 0x80) > 0)
-					iColor = white;
-				else
 					iColor = black;
+				else
+					iColor = white;
 				I.setRGB(col + idx, row, iColor);
 			}
 		}
