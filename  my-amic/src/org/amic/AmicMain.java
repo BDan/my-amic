@@ -5,57 +5,61 @@ import java.applet.*;
 
 import javax.swing.*;
 
-public class AmicMain extends Applet implements KeyListener { //extends JFrame 
+public class AmicMain extends  JFrame implements KeyListener, KeyEventDispatcher { //extends JFrame 
 	AmicPanel screenCanvas;
 	Emulator monAmic;
     static final long serialVersionUID = -6339304136266227478L;
 
     public AmicMain() {
-    	/*
-		super("aMIC emulator");
-		//setSize(550, 450);
-		JPanel panel = (JPanel)getContentPane();
-		panel.setPreferredSize(new Dimension(512,512));
-		//panel.setLayout(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		screenCanvas = new AmicPanel();
-		monAmic = new Emulator();
-		monAmic.setTargetDisplay(screenCanvas);
-		panel.add(screenCanvas);
-		
-		addKeyListener(this);
-		
-		pack();
-		//setResizable(false);
-		setVisible(true);
-		monAmic.launch();
-		*/
-	}
-    @Override
-    public void init(){
-		//JPanel panel = (JPanel)getContentPane();
-		setPreferredSize(new Dimension(512,512));
-		//panel.setLayout(null);
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		screenCanvas = new AmicPanel();
-		monAmic = new Emulator();
-		monAmic.setTargetDisplay(screenCanvas);
-		add(screenCanvas);
-		
-		addKeyListener(this);
-		
-		//pack();
-		//setResizable(false);
-		setVisible(true);
     	
-    }
+//		super("aMIC emulator");
+//		//setSize(550, 450);
+//		JPanel panel = (JPanel)getContentPane();
+//		panel.setPreferredSize(new Dimension(512,512));
+//		//panel.setLayout(null);
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		
+//		screenCanvas = new AmicPanel();
+//		monAmic = new Emulator();
+//		monAmic.setTargetDisplay(screenCanvas);
+//		panel.add(screenCanvas);
+//		
+//
+//		
+//		addKeyListener(this);
+//		
+//		pack();
+//		//setResizable(false);
+//		setVisible(true);
+//		monAmic.launch();
+		
+	}
 
-    @Override
-    public void start(){
-    	monAmic.launch();
-    }
+//	@Override
+//	public void init() {
+//		//JPanel panel = (JPanel)getContentPane();
+//		setPreferredSize(new Dimension(512,512));
+//		//panel.setLayout(null);
+//		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		
+//		screenCanvas = new AmicPanel();
+//		//screenCanvas.setEnabled(false);
+//		monAmic = new Emulator();
+//		
+//		monAmic.setTargetDisplay(screenCanvas);
+//		add(screenCanvas);
+//		
+//		addKeyListener(this);
+//		//pack();
+//		//setResizable(false);
+//		setVisible(true);
+//    	
+//    }
+
+//    @Override
+//    public void start(){
+//    	monAmic.launch();
+//    }
 
     public void initialiseFrame(){
     	JFrame mainFrame = new JFrame("aMIC emulator");
@@ -69,7 +73,8 @@ public class AmicMain extends Applet implements KeyListener { //extends JFrame
 		monAmic.setTargetDisplay(screenCanvas);
 		panel.add(screenCanvas);
 		
-		mainFrame.addKeyListener(this);
+		//mainFrame.addKeyListener(this);
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
 		
 		mainFrame.pack();
 		//setResizable(false);
@@ -191,5 +196,18 @@ public class AmicMain extends Applet implements KeyListener { //extends JFrame
 		return retVal;
 
 		
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent e) {
+		int kc = e.getKeyCode();
+
+        if (e.getID() == KeyEvent.KEY_PRESSED) {
+        	keyPressed(e);
+        } else if (e.getID()== KeyEvent.KEY_RELEASED){
+        	keyReleased(e);
+        }
+		
+		return false;
 	}
 }
