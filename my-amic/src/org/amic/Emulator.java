@@ -6,19 +6,21 @@ package org.amic;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class Emulator implements Z80.Env, Runnable {
 	interface Display{
 		void updateScreen (Image I);
-		void setDebugFlag (int key, int val);
-		//0 = overtime frame
-		//1 = processing time [ms]
+		Tracer getTracer();
+		void showTracer(boolean show);
 	}
 
-	
+	private static final BlockingQueue SLEEPER = new ArrayBlockingQueue(1);
 //Constant values
 	final int FPS = 50;
-	final int timeFrame = 10000/FPS;
+	final int timeFrame = 10000/FPS; //frame duration in ??? unit
 	private final int AD_ROM=0x4000;
 	private final int cpu_freq = 2500000; //Hz
 	long audioTime;
@@ -37,16 +39,15 @@ public class Emulator implements Z80.Env, Runnable {
 	
 	public final Z80 cpu = new Z80(this);
 	Display displayer = null;
-	
+	boolean showTiming=false;
 	
 	Thread runner;
 	
-	/*
-	public amic_emu (long frame_len){
-		this.frame_len = frame_len;
+	public void toggleShowTiming(){
+		showTiming = !showTiming;
+		displayer.getTracer().setShow(showTiming);
+		
 	}
-	*/
-
 
 	public void setTargetDisplay (Display displayer){
 		this.displayer = displayer;
@@ -165,6 +166,7 @@ public class Emulator implements Z80.Env, Runnable {
 	}
 	
 	void drawVram() {
+		//return;
 		final int white = 0xe4e4e4, black = 0x000000;
 		for (int addr = 0x4000; addr < 0x6000; addr++) {
 			int val = memo[addr];
@@ -182,6 +184,13 @@ public class Emulator implements Z80.Env, Runnable {
 		}
 	}
 	
+	public void reset(){
+		cpu.reset();
+	}
+	public void nmi(){
+		cpu.nmi();
+	}
+	
 	@Override
 	public void run() {
 
@@ -197,43 +206,53 @@ public class Emulator implements Z80.Env, Runnable {
 		cpu.time = 0;
 		audioTime = 0;
 		long time = System.nanoTime()/100000; //System.currentTimeMillis();
+		Tracer tracer = displayer.getTracer();
+//		tracer.setValue(0, timeFrame*100);
+//		tracer.changePage();
+//		tracer.setValue(0, timeFrame*100);
+		
 		while (runner == thisThread) {
-			long tStart = System.nanoTime()/100000;
+			
+			long tStart = System.nanoTime()/1000;
+			//long tStart = time*100;
+			tracer.setValue(0, timeFrame*100);
+			
+			tracer.changePage();
 			cpu.execute();
+			long tCPU = System.nanoTime()/1000;
+
+			tracer.setValue(1, (int)(tCPU-tStart));
 			drawVram();
 			
-			long tSym = System.nanoTime()/100000;
+			long tSym = System.nanoTime()/1000;
+			tracer.setValue(3, (int)(tSym - tCPU));
 			displayer.updateScreen(I);
 
-			long tEnd = System.nanoTime()/100000;
+			long tEnd = System.nanoTime()/1000;
+			tracer.setValue(2, (int)(tEnd - tSym));
 			speaker.ping(cpu.time - audioTime, audio_bit);
 			
-			displayer.setDebugFlag(1,(int)(tSym-tStart));
-			displayer.setDebugFlag(2,(int)(tEnd-tSym));
-
-			displayer.setDebugFlag(0,0);
-			time += timeFrame;  
+			time += timeFrame;
+			
+			cpu.time -= frameTicks;
+			audioTime = cpu.time;
 			long crTime = System.nanoTime()/100000; //System.currentTimeMillis();
-			if (time > crTime)
+			tracer.setNumValue(0, (int)(time-crTime));
+			if (time > crTime){
 				try {
-					Thread.sleep((time - crTime)/10);
+					//Thread.sleep((time - crTime)/10);
+					SLEEPER.poll((time - crTime)/10, TimeUnit.MILLISECONDS);
+					//SLEEPER.poll(1, TimeUnit.MILLISECONDS);
 				} catch (InterruptedException e) {
 					// do nothing
 				}
-			else{
-				
-				//overTime = true;
-				displayer.setDebugFlag(0,1);
-				Thread.yield();
-				crTime -= 1000;
-				if (crTime > time){
-					displayer.setDebugFlag(0,2);
-					time = crTime;
-				} 
 			}
+
 			//audioTime -= frameTicks;
-			cpu.time -= frameTicks;
-			audioTime = cpu.time;
+			
+			long finalTime = System.nanoTime()/1000;
+			tracer.setValue(4,(int)(finalTime-tEnd));
+			tracer.setNumValue(1,(int)(finalTime/100-time));
 		}
 	}
 
@@ -254,26 +273,13 @@ public class Emulator implements Z80.Env, Runnable {
 				portB &= ~(1 << col);
 			}
 		}
-		// System.out.printf("%d, %d, %b\n", row, col, val);
 	}
 	public void launch() {
-		//initMem();
-		//loadHex("d:\\2009_n\\other\\amic\\mon_v01\\mon_amic.hex");
-		//loadHex("d:\\2009_n\\other\\tape\\amic.hex");
-		
-		//loadHexFromResource("mon_amic.hex");
-		//loadHexFromResource("amic.hex");
-		 
-		//loadHex("d:\\2009_n\\other\\amic\\bios\\amic_01.hex");
 		System.out.println (System.getProperty("user.dir"));
-		//loadHex("/mon_amic_v01.hex");
-		//loadHex("/vis_z80_amic.hex");
-
-		// aMIC.startAddr(0x8017);
-		// 
 		cpu.reset();
 		//cpu.pc(0x8000);
 		runner = new Thread(this);
+		runner.setPriority(Thread.MAX_PRIORITY);
 		runner.start();
 
 	}

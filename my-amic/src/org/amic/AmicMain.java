@@ -1,65 +1,21 @@
 package org.amic;
-import java.awt.*;
-import java.awt.event.*;
-import java.applet.*;
+import java.awt.Dimension;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class AmicMain extends  JFrame implements KeyListener, KeyEventDispatcher { //extends JFrame 
+public class AmicMain extends  JFrame implements KeyEventDispatcher { //extends JFrame 
 	AmicPanel screenCanvas;
 	Emulator monAmic;
     static final long serialVersionUID = -6339304136266227478L;
 
     public AmicMain() {
-    	
-//		super("aMIC emulator");
-//		//setSize(550, 450);
-//		JPanel panel = (JPanel)getContentPane();
-//		panel.setPreferredSize(new Dimension(512,512));
-//		//panel.setLayout(null);
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		
-//		screenCanvas = new AmicPanel();
-//		monAmic = new Emulator();
-//		monAmic.setTargetDisplay(screenCanvas);
-//		panel.add(screenCanvas);
-//		
-//
-//		
-//		addKeyListener(this);
-//		
-//		pack();
-//		//setResizable(false);
-//		setVisible(true);
-//		monAmic.launch();
-		
+	
 	}
-
-//	@Override
-//	public void init() {
-//		//JPanel panel = (JPanel)getContentPane();
-//		setPreferredSize(new Dimension(512,512));
-//		//panel.setLayout(null);
-//		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		
-//		screenCanvas = new AmicPanel();
-//		//screenCanvas.setEnabled(false);
-//		monAmic = new Emulator();
-//		
-//		monAmic.setTargetDisplay(screenCanvas);
-//		add(screenCanvas);
-//		
-//		addKeyListener(this);
-//		//pack();
-//		//setResizable(false);
-//		setVisible(true);
-//    	
-//    }
-
-//    @Override
-//    public void start(){
-//    	monAmic.launch();
-//    }
 
     public void initialiseFrame(){
     	JFrame mainFrame = new JFrame("aMIC emulator");
@@ -73,7 +29,6 @@ public class AmicMain extends  JFrame implements KeyListener, KeyEventDispatcher
 		monAmic.setTargetDisplay(screenCanvas);
 		panel.add(screenCanvas);
 		
-		//mainFrame.addKeyListener(this);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
 		
 		mainFrame.pack();
@@ -93,31 +48,6 @@ public class AmicMain extends  JFrame implements KeyListener, KeyEventDispatcher
 		mainApp.initialiseFrame();
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		int ks = keyScan(e);
-		//System.out.printf("Got %c\n",e.getKeyChar());
-		if ((ks&0x80) == 0){
-			monAmic.setKeyMatrix(((ks&0xf0)>>>4),(ks&0x0f), true);
-		}else {
-			monAmic.setKeyPortB(((ks&0xf0)>>>4),(ks&0x0f), true);
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		int ks = keyScan(e);
-		if ((ks&0x80) == 0){
-			monAmic.setKeyMatrix(((ks&0xf0)>>>4),(ks&0x0f), false);
-		} else {
-			monAmic.setKeyPortB(((ks&0xf0)>>>4),(ks&0x0f), false);
-		}
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-
-	}
 	private int keyScan (KeyEvent e){
 		//TODO: for key codes between 0x20 and 0x60 (34 keys) we can use a table
 		int c = e.getKeyCode();
@@ -177,6 +107,16 @@ public class AmicMain extends  JFrame implements KeyListener, KeyEventDispatcher
 		case KeyEvent.VK_TAB :retVal = 0x00; break;
 		case KeyEvent.VK_DELETE :retVal = 0x36; break;
 		case KeyEvent.VK_ESCAPE :retVal = 0x53; break;
+		
+//		case KeyEvent.VK_F5:
+//			monAmic.reset();
+//		break;
+//		case KeyEvent.VK_F6:
+//			monAmic.nmi();
+//		break;
+//		case KeyEvent.VK_F7:
+//			monAmic.toggleShowTiming();
+//		break;
 
 		
 		case KeyEvent.VK_INSERT:
@@ -197,15 +137,46 @@ public class AmicMain extends  JFrame implements KeyListener, KeyEventDispatcher
 
 		
 	}
+	
+	void setKeyboadPorts(int key, boolean isDown){
+		if ((key&0x80) == 0){
+			monAmic.setKeyMatrix(((key&0xf0)>>>4),(key&0x0f), isDown);
+		}else {
+			monAmic.setKeyPortB(((key&0xf0)>>>4),(key&0x0f), isDown);
+		}
+		
+	}
+	
+	boolean isSysKey(KeyEvent e){
+		if (e.getID()== KeyEvent.KEY_RELEASED){
+			switch (e.getKeyCode()){
+			case KeyEvent.VK_F5:
+				monAmic.reset();
+				return true;
+			
+			case KeyEvent.VK_F6:
+				monAmic.nmi();
+				return true;
+			
+			case KeyEvent.VK_F7:
+				monAmic.toggleShowTiming();
+				return true;
+			}
+		}
+		return false;
+		
+	}
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
-		int kc = e.getKeyCode();
-
+		if (isSysKey(e)){
+			return false;
+		}
+		int ks = keyScan(e);
         if (e.getID() == KeyEvent.KEY_PRESSED) {
-        	keyPressed(e);
+        	setKeyboadPorts(ks, true);
         } else if (e.getID()== KeyEvent.KEY_RELEASED){
-        	keyReleased(e);
+        	setKeyboadPorts(ks, false);
         }
 		
 		return false;
