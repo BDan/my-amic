@@ -25,8 +25,10 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 	boolean smoothRender = false;
 	boolean wasScaled = false;
 	boolean showDebug = false;
+	
 	int lastSize = 0;
 	int debugFlags[] = new int[6];
+	Tracer tracer = new Tracer(5);
 
 	public AmicPanel() {
 		super();
@@ -43,6 +45,10 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 	public void paintComponent(Graphics comp) {
 		//Graphics2D comp2D = (Graphics2D) comp;
 		//paintGraphics(comp2D);
+	}
+	@Override
+	public Tracer getTracer(){
+		return tracer;
 	}
 
 	void paintGraphics(Graphics2D comp2D, Image img) {
@@ -70,23 +76,25 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 		//long tmpTime = System.nanoTime();
 		comp2D.drawImage(img, 0, 0, imgSize, imgSize, this);
 		//msT2 = (System.nanoTime() - tmpTime)/100000;
+		
+		tracer.draw(comp2D, getSize());
 
 		
-		if (showDebug){
-			comp2D.setColor(Color.RED);
-			comp2D.drawString(String.format("Simulate: %06d Draw: %06d",debugFlags[1],debugFlags[2]), 30, 30);
-		}
-			
-		if (debugFlags[0]>0){
-			if (debugFlags[0]==1)
-				comp2D.setColor(Color.GREEN);
-			else
-				comp2D.setColor(Color.RED);		
-			
-		} else{
-			comp2D.setColor(Color.WHITE);
-		}
-		comp2D.fillRect(0, getSize().height-10, 4, 4);
+//		if (showDebug){
+//			comp2D.setColor(Color.RED);
+//			comp2D.drawString(String.format("Simulate: %06d Draw: %06d",debugFlags[1],debugFlags[2]), 30, 30);
+//		}
+//			
+//		if (debugFlags[0]>0){
+//			if (debugFlags[0]==1)
+//				comp2D.setColor(Color.GREEN);
+//			else
+//				comp2D.setColor(Color.RED);		
+//			
+//		} else{
+//			comp2D.setColor(Color.WHITE);
+//		}
+//		comp2D.fillRect(0, getSize().height-10, 4, 4);
 
 		msLast = System.nanoTime();
 	}
@@ -117,6 +125,12 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 			setIgnoreRepaint(true);
 		}
 		
+		
+	}
+
+	@Override
+	public void showTracer(boolean show) {
+		// TODO Auto-generated method stub
 		
 	}
 
