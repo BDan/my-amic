@@ -17,7 +17,7 @@ public class Emulator implements Z80.Env, Runnable {
 		void showTracer(boolean show);
 	}
 
-	private static final BlockingQueue SLEEPER = new ArrayBlockingQueue(1);
+	private static final BlockingQueue<Integer> SLEEPER = new ArrayBlockingQueue<Integer>(1); //used as a source of precise delays
 //Constant values
 	final int FPS = 50;
 	final int timeFrame = 10000/FPS; //frame duration in ??? unit
@@ -237,7 +237,7 @@ public class Emulator implements Z80.Env, Runnable {
 			cpu.time -= frameTicks;
 			audioTime = cpu.time;
 			long crTime = System.nanoTime()/100000; //System.currentTimeMillis();
-			tracer.setNumValue(0, (int)(time-crTime));
+			//tracer.setNumValue(0, (int)(time-crTime));
 			if (time > crTime){
 				try {
 					//Thread.sleep((time - crTime)/10);
@@ -246,13 +246,18 @@ public class Emulator implements Z80.Env, Runnable {
 				} catch (InterruptedException e) {
 					// do nothing
 				}
+			} else {
+				if (time<0){
+					System.out.println("time<0");
+				}
+				Thread.yield();
 			}
 
 			//audioTime -= frameTicks;
 			
 			long finalTime = System.nanoTime()/1000;
 			tracer.setValue(4,(int)(finalTime-tEnd));
-			tracer.setNumValue(1,(int)(finalTime/100-time));
+			//tracer.setNumValue(1,(int)(finalTime/100-time));
 		}
 	}
 
