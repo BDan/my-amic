@@ -29,7 +29,7 @@ public class Tracer {
 	}
 	public void changePage(){
 			active=(active+1)%1;
-			row=(row+1)%50;
+			row=(row+1)%values.length;
 	}
 	public void setNumValue(int idx, int value){
 		numValues[active][idx]=value;
@@ -61,6 +61,7 @@ public class Tracer {
 				graphics.setColor(segments[(idx-1)%segments.length]);
 				graphics.drawLine(x1, y, x2, y);
 				x1=x2;
+				
 				
 			}
 			x1=x;

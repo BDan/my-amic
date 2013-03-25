@@ -107,6 +107,7 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 		strategy.show();
 		
 	}
+	
 	public void setDebugFlag (int key, int value){
 		if (key<0 || key>= debugFlags.length)
 			return;

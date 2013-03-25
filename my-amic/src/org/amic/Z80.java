@@ -2,7 +2,7 @@ package org.amic;
 /*
  *	Z80.java
  *
- *	Copyright 2004-2009 Jan Bobrowski <jb@wizard.ae.krakow.pl>
+ *	Copyright 2004-2010 Jan Bobrowski <jb@wizard.ae.krakow.pl>
  *
  *	This program is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -39,8 +39,8 @@ public final class Z80 {
 	private int A_, B_, C_, D_, E_, HL_;
 	private int IX, IY;
 	private int IR, R;
-	private int MP; /* MEMPTR, the hidden register (rudimentary emulation)
-			   partial support according to memptr_eng.txt */
+	private int MP; /* MEMPTR, the hidden register
+			   emulated according to memptr_eng.txt */
 	private int Ff, Fr, Fa, Fb;
 	private int Ff_, Fr_, Fa_, Fb_;
 
@@ -54,6 +54,7 @@ public final class Z80 {
    V: (Fa.7^Fr.7) & (Fb.7^Fr.7)
    X: Fa.8
  P/V: X ? P : V
+   N: Fb.9
    H: Fr.4 ^ Fa.4 ^ Fb.4 ^ Fb.12
 
 		FEDCBA98 76543210
@@ -220,8 +221,9 @@ public final class Z80 {
 
 	private void bit(int n, int v)
 	{
-		Ff = Ff&~0xFF | (v &= 1<<n);
-		Fa = ~(Fr = v); Fb = 0;
+		int m = v & 1<<n;
+		Ff = Ff&~0xFF | v&F53 | m;
+		Fa = ~(Fr = m); Fb = 0;
 	}
 
 	private void f_szh0n0p(int r)
@@ -258,31 +260,36 @@ public final class Z80 {
 
 	private int add16(int a, int b)
 	{
-		int r = (MP=a) + b;
+		int r = a + b;
 		Ff = Ff & FS | r>>>8 & 0x128;
 		Fa &= ~FH;
 		Fb = Fb&0x80 | ((r ^ a ^ b)>>>8 ^ Fr) & FH;
+		MP = a+1;
 		time += 7;
 		return (char)r;
 	}
 
 	private void adc_hl(int b)
 	{
-		int r = HL + b + (Ff>>>8 & FC);
+		int a,r;
+		r = (a=HL) + b + (Ff>>>8 & FC);
 		Ff = r>>>8;
-		Fa = HL>>>8; Fb = b>>>8;
+		Fa = a>>>8; Fb = b>>>8;
 		HL = r = (char)r;
 		Fr = r>>>8 | r<<8;
+		MP = a+1;
 		time += 7;
 	}
 
 	private void sbc_hl(int b)
 	{
-		int r = HL - b - (Ff>>>8 & FC);
+		int a,r;
+		r = (a=HL) - b - (Ff>>>8 & FC);
 		Ff = r>>>8;
-		Fa = HL>>>8; Fb = ~(b>>>8);
+		Fa = a>>>8; Fb = ~(b>>>8);
 		HL = r = (char)r;
 		Fr = r>>>8 | r<<8;
+		MP = a+1;
 		time += 7;
 	}
 
@@ -343,6 +350,7 @@ public final class Z80 {
 		time += 7;
 		f_szh0n0p(A = A&0xF0 | v&0x0F);
 		env.mem(HL, v>>>4 & 0xFF);
+		MP = HL+1;
 		time += 3;
 	}
 
@@ -352,6 +360,7 @@ public final class Z80 {
 		time += 7;
 		f_szh0n0p(A = A&0xF0 | v>>>8);
 		env.mem(HL, v & 0xFF);
+		MP = HL+1;
 		time += 3;
 	}
 
@@ -492,9 +501,9 @@ public final class Z80 {
 // -------------- >8 main
 // case 0x00: break;
  case 0x08: ex_af(); break;
- case 0x10: {time++; byte d=(byte)env.mem(v=PC); time+=3;
-	if((B=B-1&0xFF)!=0) {time+=5; v+=d;}
-	PC=(char)(v+1);} break;
+ case 0x10: {time++; v=PC; byte d=(byte)env.mem(v++); time+=3;
+	if((B=B-1&0xFF)!=0) {time+=5; MP=v+=d;}
+	PC=(char)v;} break;
  case 0x18: MP=PC=(char)(PC+1+(byte)env.mem(PC)); time+=8; break;
  case 0x09: HL=add16(HL,B<<8|C); break;
  case 0x19: HL=add16(HL,D<<8|E); break;
@@ -512,14 +521,14 @@ public final class Z80 {
  case 0x13: if(++E==256) {D=D+1&0xFF;E=0;} time+=2; break;
  case 0x0B: if(--C<0) B=B-1&(C=0xFF); time+=2; break;
  case 0x1B: if(--E<0) D=D-1&(E=0xFF); time+=2; break;
- case 0x02: env.mem(B<<8|C,A); time+=3; break;
- case 0x0A: A=env.mem(B<<8|C); time+=3; break;
- case 0x12: env.mem(D<<8|E,A); time+=3; break;
- case 0x1A: A=env.mem(D<<8|E); time+=3; break;
- case 0x22: env.mem16(imm16(),HL); time+=6; break;
- case 0x2A: HL=env.mem16(imm16()); time+=6; break;
- case 0x32: env.mem(imm16(),A); time+=3; break;
- case 0x3A: A=env.mem(imm16()); time+=3; break;
+ case 0x02: MP=(v=B<<8|C)+1&0xFF|A<<8; env.mem(v,A); time+=3; break;
+ case 0x0A: MP=(v=B<<8|C)+1; A=env.mem(v); time+=3; break;
+ case 0x12: MP=(v=D<<8|E)+1&0xFF|A<<8; env.mem(v,A); time+=3; break;
+ case 0x1A: MP=(v=D<<8|E)+1; A=env.mem(v); time+=3; break;
+ case 0x22: MP=(v=imm16())+1; env.mem16(v,HL); time+=6; break;
+ case 0x2A: MP=(v=imm16())+1; HL=env.mem16(v); time+=6; break;
+ case 0x32: MP=(v=imm16())+1&0xFF|A<<8; env.mem(v,A); time+=3; break;
+ case 0x3A: MP=(v=imm16())+1; A=env.mem(v); time+=3; break;
  case 0x04: B=inc(B); break;
  case 0x05: B=dec(B); break;
  case 0x06: B=imm8(); break;
@@ -731,8 +740,8 @@ public final class Z80 {
  case 0xFE: cp(imm8()); break;
  case 0xC9: MP=PC=pop(); break;
  case 0xCD: v=imm16(); push(PC); MP=PC=v; break;
- case 0xD3: env.out(imm8()|A<<8,A); time+=4; break;
- case 0xDB: A=env.in(imm8()|A<<8); time+=4; break;
+ case 0xD3: env.out(v=imm8()|A<<8,A); MP=v+1&0xFF|v&0xFF00; time+=4; break;
+ case 0xDB: MP=(v=imm8()|A<<8)+1; A=env.in(v); time+=4; break;
  case 0xD9: exx(); break;
  case 0xE3: v=pop(); push(HL); MP=HL=v; time+=2; break;
  case 0xE9: PC=HL; break;
@@ -781,14 +790,14 @@ public final class Z80 {
  case 0x31: SP=imm16(); break;
  case 0x33: SP=(char)(SP+1); time+=2; break;
  case 0x3B: SP=(char)(SP-1); time+=2; break;
- case 0x02: env.mem(bc(),A); time+=3; break;
- case 0x0A: A=env.mem(bc()); time+=3; break;
- case 0x12: env.mem(de(),A); time+=3; break;
- case 0x1A: A=env.mem(de()); time+=3; break;
- case 0x22: env.mem16(imm16(),xy); time+=6; break;
- case 0x2A: xy=env.mem16(imm16()); time+=6; break;
- case 0x32: env.mem(imm16(),A); time+=3; break;
- case 0x3A: A=env.mem(imm16()); time+=3; break;
+ case 0x02: MP=(v=bc())+1&0xFF|A<<8; env.mem(v,A); time+=3; break;
+ case 0x0A: MP=(v=bc())+1; A=env.mem(v); time+=3; break;
+ case 0x12: MP=(v=de())+1&0xFF|A<<8; env.mem(v,A); time+=3; break;
+ case 0x1A: MP=(v=de())+1; A=env.mem(v); time+=3; break;
+ case 0x22: MP=(v=imm16())+1; env.mem16(v,xy); time+=6; break;
+ case 0x2A: MP=(v=imm16())+1; xy=env.mem16(v); time+=6; break;
+ case 0x32: MP=(v=imm16())+1&0xFF|A<<8; env.mem(v,A); time+=3; break;
+ case 0x3A: MP=(v=imm16())+1; A=env.mem(v); time+=3; break;
  case 0x04: B=inc(B); break;
  case 0x05: B=dec(B); break;
  case 0x06: B=imm8(); break;
@@ -1002,8 +1011,8 @@ public final class Z80 {
  case 0xFE: cp(imm8()); break;
  case 0xC9: MP=PC=pop(); break;
  case 0xCD: call(true); break;
- case 0xD3: env.out(imm8()|A<<8,A); time+=4; break;
- case 0xDB: A=env.in(imm8()|A<<8); time+=4; break;
+ case 0xD3: env.out(v=imm8()|A<<8,A); MP=v+1&0xFF|v&0xFF00; time+=4; break;
+ case 0xDB: MP=(v=imm8()|A<<8)+1; A=env.in(v); time+=4; break;
  case 0xD9: exx(); break;
  case 0xE3: v=pop(); push(xy); MP=xy=v; time+=2; break;
  case 0xE9: PC=xy; break;
@@ -1042,10 +1051,10 @@ public final class Z80 {
  case 0x48: f_szh0n0p(C=env.in(B<<8|C)); time+=4; break;
  case 0x50: f_szh0n0p(D=env.in(B<<8|C)); time+=4; break;
  case 0x58: f_szh0n0p(E=env.in(B<<8|C)); time+=4; break;
- case 0x60: v=env.in(B<<8|C); HL=HL&0xFF|v<<8; f_szh0n0p(v); time+=4; break;
- case 0x68: v=env.in(B<<8|C); HL=HL&0xFF00|v; f_szh0n0p(v); time+=4; break;
+ case 0x60: f_szh0n0p(v=env.in(B<<8|C)); HL=HL&0xFF|v<<8; time+=4; break;
+ case 0x68: f_szh0n0p(v=env.in(B<<8|C)); HL=HL&0xFF00|v; time+=4; break;
  case 0x70: f_szh0n0p(env.in(B<<8|C)); time+=4; break;
- case 0x78: f_szh0n0p(A=env.in(B<<8|C)); time+=4; break;
+ case 0x78: MP=(v=B<<8|C)+1; f_szh0n0p(A=env.in(v)); time+=4; break;
  case 0x41: env.out(B<<8|C,B); time+=4; break;
  case 0x49: env.out(B<<8|C,C); time+=4; break;
  case 0x51: env.out(B<<8|C,D); time+=4; break;
@@ -1053,23 +1062,23 @@ public final class Z80 {
  case 0x61: env.out(B<<8|C,HL>>>8); time+=4; break;
  case 0x69: env.out(B<<8|C,HL&0xFF); time+=4; break;
  case 0x71: env.out(B<<8|C,0); time+=4; break;
- case 0x79: env.out(B<<8|C,A); time+=4; break;
+ case 0x79: MP=(v=B<<8|C)+1; env.out(v,A); time+=4; break;
  case 0x42: sbc_hl(B<<8|C); break;
  case 0x4A: adc_hl(B<<8|C); break;
- case 0x43: env.mem16(imm16(),B<<8|C); time+=6; break;
- case 0x4B: v=env.mem16(imm16()); B=v>>>8; C=v&0xFF; time+=6; break;
+ case 0x43: MP=(v=imm16())+1; env.mem16(v,B<<8|C); time+=6; break;
+ case 0x4B: MP=(v=imm16())+1; v=env.mem16(v); B=v>>>8; C=v&0xFF; time+=6; break;
  case 0x52: sbc_hl(D<<8|E); break;
  case 0x5A: adc_hl(D<<8|E); break;
- case 0x53: env.mem16(imm16(),D<<8|E); time+=6; break;
- case 0x5B: v=env.mem16(imm16()); D=v>>>8; E=v&0xFF; time+=6; break;
+ case 0x53: MP=(v=imm16())+1; env.mem16(v,D<<8|E); time+=6; break;
+ case 0x5B: MP=(v=imm16())+1; v=env.mem16(v); D=v>>>8; E=v&0xFF; time+=6; break;
  case 0x62: sbc_hl(HL); break;
  case 0x6A: adc_hl(HL); break;
- case 0x63: env.mem16(imm16(),HL); time+=6; break;
- case 0x6B: HL=env.mem16(imm16()); time+=6; break;
+ case 0x63: MP=(v=imm16())+1; env.mem16(v,HL); time+=6; break;
+ case 0x6B: MP=(v=imm16())+1; HL=env.mem16(v); time+=6; break;
  case 0x72: sbc_hl(SP); break;
  case 0x7A: adc_hl(SP); break;
- case 0x73: env.mem16(imm16(),SP); time+=6; break;
- case 0x7B: SP=env.mem16(imm16()); time+=6; break;
+ case 0x73: MP=(v=imm16())+1; env.mem16(v,SP); time+=6; break;
+ case 0x7B: MP=(v=imm16())+1; SP=env.mem16(v); time+=6; break;
  case 0x44:
  case 0x4C:
  case 0x54:
@@ -1085,7 +1094,7 @@ public final class Z80 {
  case 0x65:
  case 0x6D:
  case 0x75:
- case 0x7D: IFF|=IFF>>1; PC=pop(); break;
+ case 0x7D: IFF|=IFF>>1; MP=PC=pop(); break;
  case 0x46:
  case 0x4E:
  case 0x56:

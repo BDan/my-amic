@@ -2,11 +2,11 @@
 <project default="create_run_jar" name="Create Runnable Jar for Project my_amic">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
-    <target name="create_run_jar">
+    <target name="create_run_jar" depends="build">
 		<copy todir="bin">
 			<fileset dir="src" includes="**/*.hex"/>
 		</copy>
-        <jar destfile="dist/amic_emu.1.4.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="dist/amic_emu.1.5.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
                 <attribute name="Main-Class" value="org.amic.AmicMain"/>
@@ -15,4 +15,8 @@
             <fileset dir="bin"/>
         </jar>
     </target>
+    <target name="build">
+		<javac srcdir="src" destdir="bin" includeantruntime="false"/>
+	</target>
+	
 </project>
