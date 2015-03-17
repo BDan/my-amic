@@ -1,0 +1,17 @@
+![http://my-amic.googlecode.com/svn/wiki/img/amic-top.jpg](http://my-amic.googlecode.com/svn/wiki/img/amic-top.jpg)
+## aMIC ##
+  * aMIC was a home computer designed and manufactured in Romania in 1983-1984
+  * It was an original design, totally unrelated to the Sinclair Spectrum clones popular in the era.
+  * It was built around the Z80 CPU, with a very simple architecture. The design started as a laboratory prototype at _Politechnica Institute_ in Bucharest.
+  * Several configurations were produced, the most typical featuring "monitor" and BASIC interpretor.
+    * _monitor_ was a minimalist piece of firmware allowing launching applications, raw memory view/edit and primitive debugger functions
+    * The BASIC interpretor was also rather primitive (e.g. variables names can be only 2 character long) and targeted towards scientific applications, not entertainment and games (e.g. there was a built-in matrix operation library)
+  * The computer, its hardware, principles of operation, programming, etc. were thoroughly documented in a two volume book (_A. Petrescu (1985)_), which was the first introduction to computing for many people
+  * By late '80 _aMIC_ was considered obsolete, very few copies have survived to date
+## Links ##
+  * Wikipedia [article](http://ro.wikipedia.org/wiki/AMIC) (in Romanian)
+  * A [collection](http://george.chirtoaca.googlepages.com/documentation) of articles and books about older Romanian home computers.
+## Books ##
+  * A. Petrescu, F. Iacob, Gh. Rizescu, C. Novăcescu, E. Decsov, T. Ilin, F. Bar, R. Berindeanu, D. Pănescu - _Totul despre... Calculatorul personal aMIC_. Vol. 1, Editura Tehnică București, 1985. [online](http://www.box.net/shared/4n2fj0mv29gg4oxukel5)
+  * A. Petrescu, F. Iacob, Gh. Rizescu, C. Novăcescu, E. Decsov, T. Ilin, F. Bar, R. Berindeanu, D. Pănescu, C. Constantinescu, I. Petrescu, A. Matekovits - _Totul despre... Calculatorul personal aMIC._ Vol. 2, Editura Tehnică București, 1985. [online](http://www.box.net/shared/144hgkobbxhqsng207lu)
+  * M. Patrubány - _Totul despre... Microprocesorul Z80_ Vol. 1 & 2, Editura Tehnică București, 1989. [Vol. 1 online](http://www.box.net/public/qopn84jn1v)

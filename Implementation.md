@@ -1,0 +1,16 @@
+## Emulator ##
+  * **my-amic** is a Java application, requiring JRE 1.6 or later.
+  * The code is derived from [Qaop/Java](http://wizard.ae.krakow.pl/~jb/qaop/), a Sinclair Spectrum emulator. I reused most of the project as such, especially the Z80 CPU emulator, real time logic and audio modules.
+    * I had to modify the display logic (_aMIC_ has 256x256 B/W while Spectrum has 256x192, 8 colors), memory map, I/O map, keyboard matrix, etc.
+  * My only source of information about aMIC hardware was the _A. Petrescu, 1985_ book, which sometimes might be incomplete or downright wrong.
+
+## Software ##
+  * MON V.01 - first _monitor_ version (2Kb).
+    * The source code (in 8080 assembly) is included in the _A. Petrescu 1985_ book.
+    * I scanned, OCR, proof-read, and compiled it. It's included as HEX binary and [ASM code](https://my-amic.googlecode.com/svn/trunk/%20mon_v01/amic_monv01_01.asm) in the sources section.
+  * VISIBLE-Z80 - an educational package simulating the internal operation of Z80 CPU, including also assembler, disassembler, debugger, and coding exercises.
+    * By Miclos Patrubany, distributed (on cassette tape) together with the book _Totul Despre Microprocesorul Z80_.
+    * I digitized a copy of the tape, and I extracted the binary using a set of self made tools (mostly written in Ruby).
+  * Z80-MONITOR - the _monitor_ installed on production aMIC copies, including the BASIC interpretor.
+    * I received an "EPROM dump" from a surviving aMIC in 2009, as an MP3 file.
+    * Decoded and binarised with the same tools as VISIBLE-Z80
