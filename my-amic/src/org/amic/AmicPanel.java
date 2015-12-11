@@ -1,14 +1,19 @@
 package org.amic;
-import java.awt.*;
+import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 
 //import javax.swing.*; 
 //import java.util.*;
 
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
-import java.awt.image.*;
+import java.awt.image.BufferStrategy;
 
-public class AmicPanel extends Canvas implements Emulator.Display, HierarchyListener{
+public class AmicPanel extends Canvas implements PraeEmu.Display, HierarchyListener{
 	static final long serialVersionUID = -1723922483885254455L;
 
 	
@@ -23,16 +28,16 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 	boolean overTime;
 	//boolean smoothRender = true;
 	boolean smoothRender = false;
-	boolean wasScaled = false;
+	//boolean wasScaled = false;
 	boolean showDebug = false;
 	
 	int lastSize = 0;
 	int debugFlags[] = new int[6];
-	Tracer tracer = new Tracer(5);
+	Tracer tracer = new Tracer(6);
 
 	public AmicPanel() {
 		super();
-		setBounds(0, 0, 768, 768);
+		setBounds(0, 0, 768, 512);
 		addHierarchyListener(this);
 
 	}
@@ -61,11 +66,14 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 		} 
 		*/
 		if (smoothRender){
-			comp2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-					RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			//comp2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,	RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+			comp2D.setRenderingHint(RenderingHints.KEY_RENDERING,	RenderingHints.VALUE_RENDER_SPEED);
 		}
 
-		int imgSize = (int) (Math.min(getSize().height, getSize().width));
+		Dimension dim = getSize();
+		//int imgSize = (int) (Math.min(dim.height, dim.width));
+		comp2D.clearRect(0, 0, dim.width, dim.height);
+		
 		/*
 		if (imgSize<lastSize){
 			wasScaled = true;
@@ -74,7 +82,10 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 		lastSize = imgSize;
 		*/
 		//long tmpTime = System.nanoTime();
-		comp2D.drawImage(img, 0, 0, imgSize, imgSize, this);
+		
+		//comp2D.drawImage(img, 0, 0, imgSize, imgSize, this);
+		comp2D.drawImage(img,0,0,768,512,this);
+		
 		//msT2 = (System.nanoTime() - tmpTime)/100000;
 		
 		tracer.draw(comp2D, getSize());
@@ -121,7 +132,7 @@ public class AmicPanel extends Canvas implements Emulator.Display, HierarchyList
 		if ((e.getChangeFlags()&HierarchyEvent.SHOWING_CHANGED) != 0){
 			//A strategy object can't be created until the canvas is assigned to a visible container
 			
-			createBufferStrategy(2);
+			createBufferStrategy(3);
 			strategy = getBufferStrategy();
 			setIgnoreRepaint(true);
 		}

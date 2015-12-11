@@ -104,6 +104,7 @@ class Audio {
 	int t_acc, acc;
 
 	public void ping(long t, int bit) {
+
 		final int v_max = 100;
 		int f_au = FREQ;
 		int t_n = (int) t * f_au;
@@ -136,7 +137,7 @@ class Audio {
 				if (pos == buf1.length) {
 					SourceDataLine l = line;
 					if (l != null)
-						l.write(buf1, 0, pos);
+						//l.write(buf1, 0, pos);
 					pos = 0;
 				}
 			}

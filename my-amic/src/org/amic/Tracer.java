@@ -14,16 +14,24 @@ public class Tracer {
 	int [][] numValues;
 	int active = 0;
 	int row = 0;
-	Color[]segments=new Color[]{Color.RED,Color.GREEN, Color.BLUE,Color.MAGENTA,Color.CYAN,Color.ORANGE};
+	Color[]colorList=new Color[]{Color.RED,Color.GREEN, Color.BLUE,Color.MAGENTA,Color.CYAN,Color.ORANGE};
 	Color reference = Color.YELLOW;
 	Stroke stroke = new BasicStroke(4);
 	boolean show=false;
+	private int size;
 	
 	public Tracer(int size){
+		this.size = size;
 		values = new int[50][size];
 		numValues = new int[2][size];
 	}
-	
+	/**
+	 * Note: first value (idx=0) is the reference length, the next ones are bar segments.
+	 * if the total sum of bars from 1 to size is equal to the reference (0) then the 
+	 * combined bar length will be equal to the reference bar
+	 * @param idx
+	 * @param value
+	 */
 	public void setValue(int idx, int value){
 		values[row][idx]=value;
 	}
@@ -41,6 +49,7 @@ public class Tracer {
 	
 	public void draw(Graphics2D graphics, Dimension dim){
 		if (!show) return;
+		//graphics.clearRect(0, 0, dim.width, dim.height);
 		
 		int base = (active+1)%2;
 		int refLen=(int)(dim.width*75/100);
@@ -55,11 +64,13 @@ public class Tracer {
 		graphics.drawString(String.format(" %4d, %d",numValues[base][1],numValues[base][0] ), refLen, dim.height-20);
 		
 		for (int ydx=0;ydx<values.length;ydx++){
-			for (int idx=1;idx<values[0].length;idx++){
+			for (int idx=1;idx<size;idx++){
 				
-				int x2=x1+(int)(1.0*values[ydx][idx]/values[ydx][0]*refLen);
-				graphics.setColor(segments[(idx-1)%segments.length]);
-				graphics.drawLine(x1, y, x2, y);
+				int x2=x1+(int)((double)values[ydx][idx]/values[ydx][0]*refLen);
+				if(x2>x1){
+					graphics.setColor(colorList[(idx-1)%colorList.length]);
+					graphics.drawLine(x1, y, x2, y);
+				}
 				x1=x2;
 				
 				

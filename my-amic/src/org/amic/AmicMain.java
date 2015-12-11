@@ -3,29 +3,32 @@ import java.awt.Dimension;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class AmicMain extends  JFrame implements KeyEventDispatcher { //extends JFrame 
 	AmicPanel screenCanvas;
-	Emulator monAmic;
+	PraeEmu mPrae;
     static final long serialVersionUID = -6339304136266227478L;
 
     public AmicMain() {
+    	makePRAEKeyMap();
 	
 	}
 
     public void initialiseFrame(){
-    	JFrame mainFrame = new JFrame("aMIC emulator");
+    	JFrame mainFrame = new JFrame("PRAE emulator");
 		JPanel panel = (JPanel)mainFrame.getContentPane();
-		panel.setPreferredSize(new Dimension(512,512));
+		panel.setPreferredSize(new Dimension(768,512));
 		//panel.setLayout(null);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		screenCanvas = new AmicPanel();
-		monAmic = new Emulator();
-		monAmic.setTargetDisplay(screenCanvas);
+		mPrae = new PraeEmu();
+		mPrae.setTargetDisplay(screenCanvas);
 		panel.add(screenCanvas);
 		
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
@@ -33,40 +36,66 @@ public class AmicMain extends  JFrame implements KeyEventDispatcher { //extends 
 		mainFrame.pack();
 		//setResizable(false);
 		mainFrame.setVisible(true);
-		monAmic.initMem();
+		mPrae.initMem();
 		System.out.println (System.getProperty("user.dir"));
-		monAmic.loadHex("/mon_z80_00.hex");
-		monAmic.loadHex("/vis_z80_amic.hex");
-		monAmic.launch();
+		//mPrae.loadHex("/mon_z80_00.hex");
+		//mPrae.loadHex("/vis_z80_amic.hex");
+		mPrae.loadBin("./PRAE_ROM_3_6.bin",0);
+		mPrae.launch();
 
     	
     }
 
-	public static void main(String[] arguments) {
-		AmicMain mainApp = new AmicMain();
-		mainApp.initialiseFrame();
-	}
+	Map<Integer,Integer> keyMap = new HashMap<>();
+    
+    
+    private void makePRAEKeyMap(){
+    	final int[] scancode={
+    			'1','2','Q','W',KeyEvent.VK_CONTROL,'A','Z',KeyEvent.VK_SHIFT,
+    			'3','4','E','R','S','D','C','X',
+    			'5','6','T','Y','F','G','B','V',
+    			'7','8','U','I','H','J','M','N',
+    			'9','0','O','P','K','L',KeyEvent.VK_ENTER,' '};
+    	
+    	for (int i=0;i<scancode.length;i++){
+    		int data = i/8;
+    		int addr=i%8;
+    		keyMap.put(scancode[i], addr*16+data);
+    	}
+    }
+    
+    private int keyScanPRAE (KeyEvent e){
+    	
+    	Integer retVal = keyMap.get(e.getKeyCode());
+    	if (retVal==null){
+    		return -1;
+    	}
+    	
+    	
+    	return retVal.intValue();
+    }
+
 
 	private int keyScan (KeyEvent e){
 		//TODO: for key codes between 0x20 and 0x60 (34 keys) we can use a table
 		int c = e.getKeyCode();
 		int retVal=0xFF;
 		switch(c) {
-		case '1': retVal=0x01 ;break;
-		case '2': retVal=0x02 ;break;
-		case '3': retVal=0x03 ;break;
-		case '4': retVal=0x04 ;break;
-		case '5': retVal=0x05 ;break;
-		case '6': retVal=0x06 ;break;
-		case '7': retVal=0x07 ;break;
-		case '8': retVal=0x10 ;break;
-		case '9': retVal=0x11 ;break;
-		case '0': retVal=0x12 ;break;
+		case '1': retVal=0x00 ;break;
+		case '2': retVal=0x10 ;break;
+		case '3': retVal=0x01 ;break;
+		case '4': retVal=0x11 ;break;
+		case '5': retVal=0x02 ;break;
+		case '6': retVal=0x12 ;break;
+		case '7': retVal=0x03 ;break;
+		case '8': retVal=0x13 ;break;
+		case '9': retVal=0x04 ;break;
+		case '0': retVal=0x14 ;break;
 		case '-': retVal=0x13 ;break;
 		case '=': retVal=0x14 ;break;
-		case 'Q': retVal=0x21 ;break;
-		case 'W': retVal=0x22 ;break;
-		case 'E': retVal=0x23 ;break;
+		case 'Q': retVal=0x20 ;break;
+		case 'W': retVal=0x30 ;break;
+		case 'E': retVal=0x21 ;break;
 		case 'R': retVal=0x24 ;break;
 		case 'T': retVal=0x25 ;break;
 		case 'Y': retVal=0x26 ;break;
@@ -74,8 +103,8 @@ public class AmicMain extends  JFrame implements KeyEventDispatcher { //extends 
 		case 'I': retVal=0x30 ;break;
 		case 'O': retVal=0x31 ;break;
 		case 'P': retVal=0x32 ;break;
-		case '[': retVal=0x33 ;break; //aMIC does not have a ']' key 
-		case ']': retVal=0xFF ;break; // ] = SHIFT + [
+		case '[': retVal=0x33 ;break; 
+		case ']': retVal=0xFF ;break;
 		case KeyEvent.VK_QUOTE: retVal=0x52 ;break;
 		case '\\': retVal=0x34 ;break;
 		case 'A': retVal=0x40 ;break;
@@ -100,9 +129,9 @@ public class AmicMain extends  JFrame implements KeyEventDispatcher { //extends 
 		case '.': retVal=0x70 ;break;
 		case '/': retVal=0x71 ;break;
 		case ' ': retVal=0x73 ;break;
-		case KeyEvent.VK_BACK_SPACE:retVal = 0x15; break;
+		case KeyEvent.VK_BACK_SPACE:retVal = 0x74; break;
 
-		case KeyEvent.VK_ENTER :retVal = 0x54; break;
+		case KeyEvent.VK_ENTER :retVal = 0x64; break;
 		case KeyEvent.VK_TAB :retVal = 0x00; break;
 		case KeyEvent.VK_DELETE :retVal = 0x36; break;
 		case KeyEvent.VK_ESCAPE :retVal = 0x53; break;
@@ -138,27 +167,24 @@ public class AmicMain extends  JFrame implements KeyEventDispatcher { //extends 
 	}
 	
 	void setKeyboadPorts(int key, boolean isDown){
-		if ((key&0x80) == 0){
-			monAmic.setKeyMatrix(((key&0xf0)>>>4),(key&0x0f), isDown);
-		}else {
-			monAmic.setKeyPortB(((key&0xf0)>>>4),(key&0x0f), isDown);
-		}
+
 		
+	
 	}
 	
 	boolean isSysKey(KeyEvent e){
 		if (e.getID()== KeyEvent.KEY_RELEASED){
 			switch (e.getKeyCode()){
 			case KeyEvent.VK_F5:
-				monAmic.reset();
+				mPrae.reset();
 				return true;
 			
 			case KeyEvent.VK_F6:
-				monAmic.nmi();
+				mPrae.nmi();
 				return true;
 			
 			case KeyEvent.VK_F7:
-				monAmic.toggleShowTiming();
+				mPrae.toggleShowTiming();
 				return true;
 			}
 		}
@@ -171,13 +197,24 @@ public class AmicMain extends  JFrame implements KeyEventDispatcher { //extends 
 		if (isSysKey(e)){
 			return false;
 		}
-		int ks = keyScan(e);
-        if (e.getID() == KeyEvent.KEY_PRESSED) {
-        	setKeyboadPorts(ks, true);
-        } else if (e.getID()== KeyEvent.KEY_RELEASED){
-        	setKeyboadPorts(ks, false);
-        }
+		//System.out.println(""+e.getID());
+		int ks = keyScanPRAE(e);
+		//System.out.printf("%04X\n",ks);
+		if (ks>=0){
+	        if (e.getID() == KeyEvent.KEY_PRESSED) {
+	        	mPrae.setPraeKeys(ks,true);
+	        } else if (e.getID()== KeyEvent.KEY_RELEASED){
+	        	mPrae.setPraeKeys(ks,false);
+	        }
+		}
 		
 		return false;
 	}
+	
+
+	public static void main(String[] arguments) {
+		AmicMain mainApp = new AmicMain();
+		mainApp.initialiseFrame();
+	}
+	
 }
