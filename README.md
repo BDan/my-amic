@@ -1,7 +1,7 @@
 # my-amic
 Emulator pentru computerele aMic si PRAE.
 
-![Tastatura aMIC](https://github.com/BDan/my-amic/blob/master/my-amic/doc/img/keyboard_layout_small.gif)
+![](https://github.com/BDan/my-amic/blob/master/my-amic/doc/img/keyboard_layout_small.gif "Tastatura aMIC")
 
 ##Descriere
 Proiectul reproduce în software funcționalitatea calculatoarelor personale aMIC și PRAE, concepute și fabricate în Romania la începutul anilor 80. Descoperiți cum se lucra cu acele mașini disponibile acum doar muzeelor și colecționarilor, ce posibilități aveau și cum arătau interfețele acestora.  
