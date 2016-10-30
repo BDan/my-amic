@@ -13,7 +13,7 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.image.BufferStrategy;
 
-public class AmicPanel extends Canvas implements PraeEmu.Display, HierarchyListener{
+public class PraePanel extends Canvas implements PraeEmu.Display, HierarchyListener{
 	static final long serialVersionUID = -1723922483885254455L;
 
 	
@@ -35,7 +35,7 @@ public class AmicPanel extends Canvas implements PraeEmu.Display, HierarchyListe
 	int debugFlags[] = new int[6];
 	Tracer tracer = new Tracer(6);
 
-	public AmicPanel() {
+	public PraePanel() {
 		super();
 		setBounds(0, 0, 768, 512);
 		addHierarchyListener(this);
