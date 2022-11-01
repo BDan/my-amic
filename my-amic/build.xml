@@ -16,7 +16,7 @@
         </jar>
     </target>
     <target name="build">
-		<javac srcdir="src" destdir="bin" includeantruntime="false"/>
+		<javac srcdir="src" destdir="bin" target="7" includeantruntime="false"/>
 	</target>
 	
 </project>
